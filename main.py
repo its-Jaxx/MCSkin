@@ -1,5 +1,6 @@
 import discord
 import requests
+import datetime
 
 with open('config.txt', 'r') as f:
   prefix = f.read().strip()
@@ -60,7 +61,14 @@ async def on_message(message):
     print("Message sent successfully")
 
   elif message.content.startswith(prefix + 'ping'):
-    await message.channel.send("Pong!")
+    start_time = datetime.datetime.now()
+    message_sent = await message.channel.send("Pinging...")
+    end_time = datetime.datetime.now()
+
+    latency = end_time - start_time
+    ping_time = round(latency.total_seconds() * 1000)
+
+    await message_sent.edit(content=f"Pong! Latency: {ping_time} ms")
     print("Ping-pong!")
 
   elif client.user.mentioned_in(message):
@@ -75,7 +83,7 @@ async def on_message(message):
       prefix = new_prefix
     else:
       await message.channel.send(
-        "You do not have permission to change the prefix.")
+        "You don't have the permission to change the prefix.")
 
 
 client.run("")
