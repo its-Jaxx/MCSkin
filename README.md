@@ -5,10 +5,10 @@ Very simple Discord bot written in Python to check someones Minecraft skin.
 
 ## Commands
 
-!ping - checks the latency between user and bot
-!skin name - views the skin of selected Minecraft username
-!changeprefix - allows you to change prefix (requires admin perms)
-@mention - mention the bot and it will tell you the current prefix set for it
+- !ping - checks the latency between user and bot
+- !skin name - views the skin of selected Minecraft username
+- !changeprefix - allows you to change prefix (requires admin perms)
+- @mention - mention the bot and it will tell you the current prefix set for it
 
 ## Contributing
 
