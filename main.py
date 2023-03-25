@@ -69,5 +69,5 @@ async def on_message(message):
     prefix = new_prefix
 
 
-client.run(
-  "Put your token ID here:")
+
+client.run("put ur bot token here :D")
