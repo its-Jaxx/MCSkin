@@ -58,16 +58,24 @@ async def on_message(message):
     print(f"Retrieved UUID: {uuid}")
     print(f"Retrieved skin URL: {skin_url}")
     print("Message sent successfully")
+
   elif message.content.startswith(prefix + 'ping'):
     await message.channel.send("Pong!")
     print("Ping-pong!")
+
+  elif client.user.mentioned_in(message):
+    await message.reply(f"My prefix is {prefix}")
+
   elif message.content.startswith(prefix + 'changeprefix'):
-    new_prefix = message.content.split()[1]
-    with open('config.txt', 'w') as f:
-      f.write(new_prefix)
-    await message.channel.send(f'Prefix changed to {new_prefix}')
-    prefix = new_prefix
+    if message.author.guild_permissions.administrator:
+      new_prefix = message.content.split()[1]
+      with open('config.txt', 'w') as f:
+        f.write(new_prefix)
+      await message.channel.send(f'Prefix changed to {new_prefix}')
+      prefix = new_prefix
+    else:
+      await message.channel.send(
+        "You do not have permission to change the prefix.")
 
 
-
-client.run("put ur bot token here :D")
+client.run("")
