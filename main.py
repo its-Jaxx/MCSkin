@@ -49,9 +49,13 @@ async def on_message(message):
       return
 
     skin_url = f"https://crafatar.com/renders/body/{uuid}"
+    model_url = f"https://crafatar.com/skins/{uuid}"
 
     embed = discord.Embed(title=f"Skin for user {username}")
     embed.set_image(url=skin_url)
+    embed.add_field(name="",
+                    value=f"[Click to download template]({model_url})",
+                    inline=False)
     await message.channel.send(embed=embed)
 
     print(f"Received message: {message.content}")
