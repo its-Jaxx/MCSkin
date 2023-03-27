@@ -89,4 +89,4 @@ async def on_message(message):
     else:
       await message.channel.send(
         "You don't have the permission to change the prefix.")
-client.run("MTA4OTU2OTAzOTEyODQ3Nzg3Nw.GhD51f.rQAYgRRkZN93fL5GZaTD_qgnJzMbc_MH-H0fpM")
+client.run("")
