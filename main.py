@@ -1,6 +1,7 @@
 import discord
 import requests
 import datetime
+print(f"It's working 1")
 
 with open('config.txt', 'r') as f:
   prefix = f.read().strip()
@@ -88,6 +89,4 @@ async def on_message(message):
     else:
       await message.channel.send(
         "You don't have the permission to change the prefix.")
-
-
-client.run("")
+client.run("MTA4OTU2OTAzOTEyODQ3Nzg3Nw.GhD51f.rQAYgRRkZN93fL5GZaTD_qgnJzMbc_MH-H0fpM")
