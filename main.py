@@ -1,6 +1,7 @@
 import discord
 import requests
 import datetime
+print(f"It's working 1")
 
 with open('config.txt', 'r') as f:
   prefix = f.read().strip()
@@ -49,9 +50,13 @@ async def on_message(message):
       return
 
     skin_url = f"https://crafatar.com/renders/body/{uuid}"
+    model_url = f"https://crafatar.com/skins/{uuid}"
 
     embed = discord.Embed(title=f"Skin for user {username}")
     embed.set_image(url=skin_url)
+    embed.add_field(name="",
+                    value=f"[Click to download template]({model_url})",
+                    inline=False)
     await message.channel.send(embed=embed)
 
     print(f"Received message: {message.content}")
@@ -84,6 +89,4 @@ async def on_message(message):
     else:
       await message.channel.send(
         "You don't have the permission to change the prefix.")
-
-
 client.run("")
