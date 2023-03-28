@@ -1,7 +1,6 @@
 import discord
 import requests
 import datetime
-print(f"It's working 1")
 
 with open('config.txt', 'r') as f:
   prefix = f.read().strip()
