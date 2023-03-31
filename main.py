@@ -2,17 +2,15 @@ import discord
 import requests
 import datetime
 from discord.ext import commands
-from discord.ext.commands import BucketType
 
 intents = discord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix='+', intents=intents)
-
-default_cooldown = commands.CooldownMapping.from_cooldown(1, 5, commands.BucketType.user)
-bot.default_cooldown = default_cooldown
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
+    activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
+    await bot.change_presence(activity=activity)
     print(f"Logged in as {bot.user.name}")
     print("Bot is ready to use")
     
@@ -76,21 +74,35 @@ async def commands(ctx):
     mention1 = "@mention"
     mention2 = "Ping the bot to get the current prefix"
     commandlist = "Shows this list of commands"
+    creatorlist = "Shows who created the bot"
 
     embed = discord.Embed(title="Commands List", color=discord.Color.green())
-    embed.add_field(name="+skin", value=f"{skin}", inline=False)
-    embed.add_field(name="+ping", value=f"{ping}", inline=False)
+    embed.add_field(name="!skin", value=f"{skin}", inline=False)
+    embed.add_field(name="!ping", value=f"{ping}", inline=False)
     embed.add_field(name=f"{mention1}", value=f"{mention2}", inline=False)
-    embed.add_field(name="+command", value=f"{commandlist}", inline=False)
+    embed.add_field(name="!command", value=f"{commandlist}", inline=False)
+    embed.add_field(name="!creator", value=f"{creatorlist}", inline=False)
 
     message_sent = await ctx.send(embed=embed)
     print("Commands list being printed")
+    
+@bot.command()
+async def creator(ctx):
+    nismo_url = f"https://github.com/nismo1337"
+    jaxx_url = f"https://github.com/its-Jaxx"
+    github_url = f"https://github.com/nismo1337/MCSkin"
+    embed = discord.Embed(title="I was created by:", color=discord.Color.blue())
+    embed.add_field(name="", value=f"[nismo1337]({nismo_url})", inline=False)
+    embed.add_field(name="", value=f"[its-Jaxx]({jaxx_url})", inline=False)
+    embed.add_field(name="", value=f"[Open source on github]({github_url})", inline=False)
+    
+    message_sent = await ctx.send(embed=embed)
 
 @bot.event
 async def on_message(message):
     if bot.user.mentioned_in(message):
-        await message.reply(f"My prefix is `+`")
+        await message.reply(f"My prefix is `!`")
     
     await bot.process_commands(message)
 
-bot.run("Enter bot token here")
+bot.run("")
