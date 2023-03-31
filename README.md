@@ -9,6 +9,7 @@ Very simple Discord bot written in Python to check someones Minecraft skin.
 - +skin name - views the skin of selected Minecraft username (switch out "name" for the desired username)
 - +commands - shows a list of commands currently available
 - @mention - mention the bot and it will tell you the current prefix set for it
+- +creator - gives a list of who created the bot
 
 ## Contributing
 
