@@ -1,6 +1,4 @@
-import discord
-import requests
-import datetime
+import discord, requests, datetime
 from discord.ext import commands
 
 intents = discord.Intents.all()
@@ -11,16 +9,12 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 async def on_ready():
     activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
     await bot.change_presence(activity=activity)
-    print(f"Logged in as {bot.user.name}")
-    print("Bot is ready to use")
-    
+    print(f"Logged in as {bot.user.name}\nBot is ready to use\n-------------------")
+
 @bot.command()
 async def skin(ctx, *, username=None):
     if not username:
-        embed = discord.Embed(
-            title="Error",
-            description="Please provide a Minecraft username",
-            color=discord.Color.red())
+        embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
         await ctx.send(embed=embed)
         return
 
@@ -49,11 +43,7 @@ async def skin(ctx, *, username=None):
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     await ctx.send(embed=embed)
 
-    print(f"Received message: {ctx.message.content}")
-    print(f"Parsed username: {username}")
-    print(f"Retrieved UUID: {uuid}")
-    print(f"Retrieved skin URL: {skin_url}")
-    print("Message sent successfully")
+    print(f"Received command: {ctx.message.content}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 
 @bot.command()
 async def ping(ctx):
@@ -105,4 +95,4 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-bot.run("")
+bot.run("MTA4OTU2OTAzOTEyODQ3Nzg3Nw.GM84R3.s7jVJQf9vkHAERoMwNZjp3ViQDfTcYJbwMvpGo")
