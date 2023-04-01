@@ -1,21 +1,27 @@
-import discord, requests, datetime
-from discord.ext import commands
+import discord, datetime, requests
+from discord.ext import commands, tasks
+from datetime import datetime
+from discord import app_commands
 
-intents = discord.Intents.all()
-intents.members = True
-bot = commands.Bot(command_prefix='!', intents=intents)
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
-@bot.event
-async def on_ready():
-    activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
-    await bot.change_presence(activity=activity)
-    print(f"Logged in as {bot.user.name}\nBot is ready to use\n-------------------")
+@tree.command(name="ping", description="Pings the bot for latency in ms", guild=discord.Object(id=1040693035081678848))
+async def ping(interaction: discord.Interaction):
+    start_time = datetime.utcnow()
+    end_time = datetime.utcnow()
 
-@bot.command(aliases=["steal"])
-async def skin(ctx, *, username=None):
+    latency = end_time - start_time
+    ping_time = round(latency.total_seconds() * 1000)
+
+    await interaction.response.send_message(f"Pong! Latency: {ping_time} ms")
+
+@tree.command(name="skin", description="Get the skin for a Minecraft user", guild=discord.Object(id=1040693035081678848))
+async def skin(interaction: discord.Interaction, username: str):
     if not username:
         embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
         return
 
     response = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{username}")
@@ -23,16 +29,16 @@ async def skin(ctx, *, username=None):
         embed = discord.Embed(title="Error", color=discord.Color.red())
         embed.add_field(value=f"Unable to find player UUID for user {username}")
         embed.add_field(value=f"Make sure you spelled it correctly")
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
         return
-    
+
     try:
         uuid = response.json()['id']
     except KeyError:
         embed = discord.Embed(title="Error", color=discord.Color.red())
         embed.add_field(name="", value=f"Unable to find player UUID for user {username}", inline=False)
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
         return
 
     skin_url = f"https://crafatar.com/renders/body/{uuid}"
@@ -41,42 +47,43 @@ async def skin(ctx, *, username=None):
     embed = discord.Embed(title=f"Skin for user {username}")
     embed.set_image(url=skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
-    await ctx.send(embed=embed)
+    await interaction.response.send_message(embed=embed)
+    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 
-    print(f"Received command: {ctx.message.content}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
+@tree.command(name="steal", description="Get the skin for a Minecraft user", guild=discord.Object(id=1040693035081678848))
+async def skin(interaction: discord.Interaction, username: str):
+    if not username:
+        embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        return
 
-@bot.command()
-async def ping(ctx):
-    start_time = datetime.datetime.now()
-    message_sent = await ctx.send("Pinging...")
-    end_time = datetime.datetime.now()
+    response = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{username}")
+    if response.status_code == 204:
+        embed = discord.Embed(title="Error", color=discord.Color.red())
+        embed.add_field(value=f"Unable to find player UUID for user {username}")
+        embed.add_field(value=f"Make sure you spelled it correctly")
+        await interaction.response.send_message(embed=embed)
+        return
 
-    latency = end_time - start_time
-    ping_time = round(latency.total_seconds() * 1000)
+    try:
+        uuid = response.json()['id']
+    except KeyError:
+        embed = discord.Embed(title="Error", color=discord.Color.red())
+        embed.add_field(name="", value=f"Unable to find player UUID for user {username}", inline=False)
+        embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
+        await interaction.response.send_message(embed=embed)
+        return
 
-    await message_sent.edit(content=f"Pong! Latency: {ping_time} ms")
-    print("Ping-pong!")
-    
-@bot.command(aliases=["command"])
-async def commands(ctx):
-    skin = "Grabs a model of the skin"
-    ping = "Pings the server to retrieve latency in ms"
-    mention1 = "@mention"
-    mention2 = "Ping the bot to get the current prefix"
-    commandlist = "Shows this list of commands"
-    creatorlist = "Shows who created the bot"
+    skin_url = f"https://crafatar.com/renders/body/{uuid}"
+    model_url = f"https://crafatar.com/skins/{uuid}"
 
-    embed = discord.Embed(title="Commands List", color=discord.Color.green())
-    embed.add_field(name="!skin - !steal", value=f"{skin}", inline=False)
-    embed.add_field(name="!ping", value=f"{ping}", inline=False)
-    embed.add_field(name=f"{mention1}", value=f"{mention2}", inline=False)
-    embed.add_field(name="!command", value=f"{commandlist}", inline=False)
-    embed.add_field(name="!creator", value=f"{creatorlist}", inline=False)
+    embed = discord.Embed(title=f"Skin for user {username}")
+    embed.set_image(url=skin_url)
+    embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
+    await interaction.response.send_message(embed=embed)
+    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 
-    message_sent = await ctx.send(embed=embed)
-    print("Commands list being printed")
-    
-@bot.command(aliases=["creators"])
+@tree.command(name="creator", description="List of the people who created me", guild=discord.Object(id=1040693035081678848))
 async def creator(ctx):
     nismo_url = f"https://github.com/nismo1337"
     jaxx_url = f"https://github.com/its-Jaxx"
@@ -85,14 +92,15 @@ async def creator(ctx):
     embed.add_field(name="", value=f"[nismo1337]({nismo_url})", inline=False)
     embed.add_field(name="", value=f"[its-Jaxx]({jaxx_url})", inline=False)
     embed.add_field(name="", value=f"[Open source on github]({github_url})", inline=False)
-    
-    message_sent = await ctx.send(embed=embed)
 
-@bot.event
-async def on_message(message):
-    if bot.user.mentioned_in(message):
-        await message.reply(f"My prefix is `!`")
-    
-    await bot.process_commands(message)
+    await ctx.response.send_message(embed=embed)
 
-bot.run("Put your bot token here")
+@client.event
+async def on_ready():
+    await tree.sync(guild=discord.Object(id=1040693035081678848))
+    print("Ready!")
+    activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
+    await client.change_presence(activity=activity)
+    print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
+
+client.run("token")
