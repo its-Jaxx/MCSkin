@@ -11,7 +11,7 @@ async def on_ready():
     await bot.change_presence(activity=activity)
     print(f"Logged in as {bot.user.name}\nBot is ready to use\n-------------------")
 
-@bot.command()
+@bot.command(aliases=["steal"])
 async def skin(ctx, *, username=None):
     if not username:
         embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
@@ -76,7 +76,7 @@ async def commands(ctx):
     message_sent = await ctx.send(embed=embed)
     print("Commands list being printed")
     
-@bot.command()
+@bot.command(aliases=["creators"])
 async def creator(ctx):
     nismo_url = f"https://github.com/nismo1337"
     jaxx_url = f"https://github.com/its-Jaxx"
@@ -95,4 +95,4 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-bot.run("")
+bot.run("Put your bot token here")
