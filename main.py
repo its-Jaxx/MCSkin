@@ -57,7 +57,7 @@ async def ping(ctx):
     await message_sent.edit(content=f"Pong! Latency: {ping_time} ms")
     print("Ping-pong!")
     
-@bot.command()
+@bot.command(aliases=["command"])
 async def commands(ctx):
     skin = "Grabs a model of the skin"
     ping = "Pings the server to retrieve latency in ms"
@@ -67,7 +67,7 @@ async def commands(ctx):
     creatorlist = "Shows who created the bot"
 
     embed = discord.Embed(title="Commands List", color=discord.Color.green())
-    embed.add_field(name="!skin", value=f"{skin}", inline=False)
+    embed.add_field(name="!skin - !steal", value=f"{skin}", inline=False)
     embed.add_field(name="!ping", value=f"{ping}", inline=False)
     embed.add_field(name=f"{mention1}", value=f"{mention2}", inline=False)
     embed.add_field(name="!command", value=f"{commandlist}", inline=False)
@@ -95,4 +95,4 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-bot.run("Put your bot token here")
+bot.run("MTA4OTU2OTAzOTEyODQ3Nzg3Nw.GmE-R3.ebpCcaK6U40hAeX_v4QbIJsu0RPDXl75wDplbw")
