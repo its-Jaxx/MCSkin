@@ -7,7 +7,7 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-@tree.command(name="ping", description="Pings the bot for latency in ms", guild=discord.Object(id=guild_id))
+@tree.command(name="ping", description="Pings the bot for latency in ms")
 async def ping(interaction: discord.Interaction):
     start_time = datetime.utcnow()
     end_time = datetime.utcnow()
@@ -17,7 +17,7 @@ async def ping(interaction: discord.Interaction):
 
     await interaction.response.send_message(f"Pong! Latency: {ping_time} ms")
 
-@tree.command(name="skin", description="Get the skin for a Minecraft user", guild=discord.Object(id=guild_id))
+@tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
     if not username:
         embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
@@ -50,7 +50,7 @@ async def skin(interaction: discord.Interaction, username: str):
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 
-@tree.command(name="steal", description="Get the skin for a Minecraft user", guild=discord.Object(id=guild_id))
+@tree.command(name="steal", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
     if not username:
         embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
@@ -83,7 +83,7 @@ async def skin(interaction: discord.Interaction, username: str):
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 
-@tree.command(name="creator", description="List of the people who created me", guild=discord.Object(id=guild_id))
+@tree.command(name="creator", description="List of the people who created me")
 async def creator(ctx):
     nismo_url = f"https://github.com/nismo1337"
     jaxx_url = f"https://github.com/its-Jaxx"
@@ -97,10 +97,10 @@ async def creator(ctx):
 
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object(id=guild_id))
+    await tree.sync()
     print("Ready!")
     activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
     await client.change_presence(activity=activity)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("token here")
+client.run("bot token here")
