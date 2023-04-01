@@ -1,22 +1,23 @@
+# Imports important libraries
 import discord, datetime, requests
 from discord.ext import commands, tasks
 from datetime import datetime
 from discord import app_commands
 
+# Important intents to make things function properly
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
-
+# Ping command - Pings the bot for latency
 @tree.command(name="ping", description="Pings the bot for latency in ms")
 async def ping(interaction: discord.Interaction):
     start_time = datetime.utcnow()
+    await interaction.response.send_message(f"Pinging...")
     end_time = datetime.utcnow()
-
     latency = end_time - start_time
     ping_time = round(latency.total_seconds() * 1000)
-
-    await interaction.response.send_message(f"Pong! Latency: {ping_time} ms")
-
+    await interaction.edit_original_response(content=f"Pong! Latency: {ping_time} ms")
+# Skin command - Get the skin for a Minecraft user
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
     if not username:
@@ -49,7 +50,7 @@ async def skin(interaction: discord.Interaction, username: str):
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
-
+# Steal command - Get the skin for a Minecraft user
 @tree.command(name="steal", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
     if not username:
@@ -82,7 +83,7 @@ async def skin(interaction: discord.Interaction, username: str):
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
-
+# Creator command - List of the people who created me
 @tree.command(name="creator", description="List of the people who created me")
 async def creator(ctx):
     nismo_url = f"https://github.com/nismo1337"
@@ -94,7 +95,7 @@ async def creator(ctx):
     embed.add_field(name="", value=f"[Open source on github]({github_url})", inline=False)
 
     await ctx.response.send_message(embed=embed)
-
+# Connects between bot server and Discord and readies it up
 @client.event
 async def on_ready():
     await tree.sync()
@@ -103,4 +104,4 @@ async def on_ready():
     await client.change_presence(activity=activity)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("bot token here")
+client.run("")
