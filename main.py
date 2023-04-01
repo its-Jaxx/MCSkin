@@ -95,4 +95,4 @@ async def on_message(message):
     
     await bot.process_commands(message)
 
-bot.run("MTA4OTU2OTAzOTEyODQ3Nzg3Nw.GmE-R3.ebpCcaK6U40hAeX_v4QbIJsu0RPDXl75wDplbw")
+bot.run("")
