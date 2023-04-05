@@ -48,6 +48,7 @@ async def skin(interaction: discord.Interaction, username: str):
     embed = discord.Embed(title=f"Skin for user {username}")
     embed.set_image(url=skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
+    embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 # Steal command - Get the skin for a Minecraft user
@@ -81,6 +82,7 @@ async def skin(interaction: discord.Interaction, username: str):
     embed = discord.Embed(title=f"Skin for user {username}")
     embed.set_image(url=skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
+    embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
 # Creator command - List of the people who created me
@@ -96,12 +98,16 @@ async def creator(ctx):
 
     await ctx.response.send_message(embed=embed)
 # Connects between bot server and Discord and readies it up
+
 @client.event
 async def on_ready():
     await tree.sync()
     print("Ready!")
     activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
     await client.change_presence(activity=activity)
+    with open('b35de674d3227cd6e2f377187df873de.png', 'rb') as f:
+        avatar_bytes = f.read()
+    await client.user.edit(avatar=avatar_bytes)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("")
+client.run("Your Bot Token Here")
