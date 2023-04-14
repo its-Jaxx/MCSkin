@@ -1,8 +1,10 @@
 # Imports important libraries
-import discord, datetime, requests
+import discord, datetime, requests, os
 from discord.ext import commands, tasks
 from datetime import datetime
 from discord import app_commands
+from PIL import Image
+from io import BytesIO
 
 # Important intents to make things function properly
 intents = discord.Intents.default()
@@ -41,16 +43,28 @@ async def skin(interaction: discord.Interaction, username: str):
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
         await interaction.response.send_message(embed=embed)
         return
-
-    skin_url = f"https://crafatar.com/renders/body/{uuid}"
+    rendered_skin_url = f"https://api.mineatar.io/body/full/{uuid}"
     model_url = f"https://crafatar.com/skins/{uuid}"
+    response = requests.get(rendered_skin_url)
+
+    image = Image.open(BytesIO(response.content))
+    image = image.resize((120, 270))
+    img_bytes = BytesIO()
+    image.save(img_bytes, format='PNG')
+    img_bytes = img_bytes.getvalue()
+
+    headers = {"Authorization": f"Client-ID IMGUR_CLIENT_ID"}
+    imgur_url = "https://api.imgur.com/3/image"
+    response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
+    full_skin_url = response.json()["data"]["link"]
 
     embed = discord.Embed(title=f"Skin for user {username}")
-    embed.set_image(url=skin_url)
+    embed.set_image(url=full_skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
     await interaction.response.send_message(embed=embed)
-    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
+    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {full_skin_url}\nModel: {model_url}\nCommand sent")
+
 # Steal command - Get the skin for a Minecraft user
 @tree.command(name="steal", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
@@ -75,16 +89,27 @@ async def skin(interaction: discord.Interaction, username: str):
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
         await interaction.response.send_message(embed=embed)
         return
-
-    skin_url = f"https://crafatar.com/renders/body/{uuid}"
+    rendered_skin_url = f"https://api.mineatar.io/body/full/{uuid}"
     model_url = f"https://crafatar.com/skins/{uuid}"
+    response = requests.get(rendered_skin_url)
+
+    image = Image.open(BytesIO(response.content))
+    image = image.resize((120, 270))
+    img_bytes = BytesIO()
+    image.save(img_bytes, format='PNG')
+    img_bytes = img_bytes.getvalue()
+
+    headers = {"Authorization": f"Client-ID IMGUR_CLIENT_ID"}
+    imgur_url = "https://api.imgur.com/3/image"
+    response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
+    full_skin_url = response.json()["data"]["link"]
 
     embed = discord.Embed(title=f"Skin for user {username}")
-    embed.set_image(url=skin_url)
+    embed.set_image(url=full_skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
     await interaction.response.send_message(embed=embed)
-    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {skin_url}\nModel: {model_url}\nCommand sent")
+    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {full_skin_url}\nModel: {model_url}\nCommand sent")
 # Creator command - List of the people who created me
 @tree.command(name="creator", description="List of the people who created me")
 async def creator(ctx):
@@ -105,9 +130,6 @@ async def on_ready():
     print("Ready!")
     activity = discord.Activity(name="Minecraft", type=discord.ActivityType.playing)
     await client.change_presence(activity=activity)
-    with open('b35de674d3227cd6e2f377187df873de.png', 'rb') as f:
-        avatar_bytes = f.read()
-    await client.user.edit(avatar=avatar_bytes)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("Your Bot Token Here")
+client.run("")
