@@ -1,3 +1,5 @@
+[![License: CC0-1.0 license](https://img.shields.io/npm/l/badge-maker.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
+
 # MCSkin
 Very simple Discord bot written in Python to check someones Minecraft skin.<br>
 If you don't feel like setting this bot up yourself<br>
