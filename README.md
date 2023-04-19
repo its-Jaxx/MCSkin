@@ -12,8 +12,11 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
-<summary>Version 6.0 (Render update)</summary>
+<summary>Version 6.0 - 6.1 (Render update)</summary>
 
+#### Version 6.1
+- Made changes to '/ping', now times the entire process and gives you accurate timings.
+#### Version 6.0
 - Changed rendered image to include outer layer (This may be hair, glasses or anything else not on the inner layer)
 
 - Makes it resize image using personal imgure link (Change IMGUR_CLIENT_ID to your own) -> This however slows down the process but is required for it to stay the same size as before this change. Though, despite it being slowed down, it's significantly faster than opening your browser of choice every time to search for user to get their skin.
