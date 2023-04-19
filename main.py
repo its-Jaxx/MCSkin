@@ -11,14 +11,41 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 # Ping command - Pings the bot for latency
-@tree.command(name="ping", description="Pings the bot for latency in ms")
+@tree.command(name="ping", description="Pings the bot for image processing latency in ms")
 async def ping(interaction: discord.Interaction):
     start_time = datetime.utcnow()
-    await interaction.response.send_message(f"Pinging...")
+    # Request image from Minetar and resize it
+    minetar_url = "https://api.mineatar.io/body/full/Chernobylite"
+    imgur_url = "https://api.imgur.com/3/image"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(minetar_url) as resp:
+            image_bytes = await resp.read()
+    with BytesIO(image_bytes) as image_buffer:
+        with Image.open(image_buffer) as image:
+            image.thumbnail((256, 256))
+            with BytesIO() as output_buffer:
+                image.save(output_buffer, "PNG")
+                output_bytes = output_buffer.getvalue()
+
+    # Upload the image to Imgur
+    headers = {
+        "Authorization": f"Client-ID IMGUR_CLIENT_ID"
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(imgur_url, headers=headers, data=output_bytes) as resp:
+            imgur_data = await resp.json()
+    imgur_url = imgur_data["data"]["link"]
+    
+    # Send the message back with latency and image processing time
     end_time = datetime.utcnow()
     latency = end_time - start_time
+    processing_time = round((end_time - start_time - latency).total_seconds() * 1000)
     ping_time = round(latency.total_seconds() * 1000)
-    await interaction.edit_original_response(content=f"Pong! Latency: {ping_time} ms")
+    await interaction.response.send_message(
+        f"Pinging image processing and upload time... (this may take a few seconds)")
+    await interaction.edit_original_response(
+        content=f"Pong!\nImage processing and upload time: {ping_time} ms")
 # Skin command - Get the skin for a Minecraft user
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
