@@ -14,6 +14,8 @@ consider inviting this bot using one of these invite links
 <details>
 <summary>Version 6.0 - 6.1 (Render update)</summary>
 
+#### Version 6.2
+- Minetar has removed support for username since April 23rd. Updated on April 24th to now only be UUID.
 #### Version 6.1
 - Made changes to '/ping', now times the entire process and gives you accurate timings.
 #### Version 6.0
