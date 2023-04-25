@@ -15,7 +15,7 @@ tree = app_commands.CommandTree(client)
 async def ping(interaction: discord.Interaction):
     start_time = datetime.utcnow()
     # Request image from Minetar and resize it
-    minetar_url = "https://api.mineatar.io/body/full/Chernobylite"
+    minetar_url = "https://api.mineatar.io/body/full/161c986278854ef8af3dd7631d9610f9"
     imgur_url = "https://api.imgur.com/3/image"
     
     async with aiohttp.ClientSession() as session:
