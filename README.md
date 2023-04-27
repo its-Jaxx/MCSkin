@@ -12,6 +12,12 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
+<summary>Version 7.0 (Server update)</summary>
+
+- Added the ability to show status of server using '/java {server_address}'
+</details>
+
+<details>
 <summary>Version 6.0 - 6.3 (Render update)</summary>
 
 #### Version 6.3
