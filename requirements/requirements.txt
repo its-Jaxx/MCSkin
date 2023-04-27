@@ -1,3 +1,6 @@
-requests
 discord
 datetime
+requests
+aiohttp
+aioredis
+mcstatus
