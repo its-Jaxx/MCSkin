@@ -12,8 +12,10 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
-<summary>Version 6.0 - 6.1 (Render update)</summary>
+<summary>Version 6.0 - 6.3 (Render update)</summary>
 
+#### Version 6.3
+- Added '/help' to provide an quick and easy list of currently supported commands.
 #### Version 6.2
 - Minetar has removed support for username since April 23rd. Updated on April 24th to now only be UUID.
 #### Version 6.1
