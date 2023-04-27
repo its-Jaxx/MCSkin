@@ -4,7 +4,7 @@
 Very simple Discord bot written in Python to check someones Minecraft skin.<br>
 If you don't feel like setting this bot up yourself<br>
 consider inviting this bot using one of these invite links
-- https://jaxx.site/discord/discord_bot
+- https://jaxx.site/discord
 - https://nismo1337.xyz/MCSkin
 
 ![image](https://media.discordapp.net/attachments/965081701237805166/1096581424552874089/image.png?width=467&height=700)
