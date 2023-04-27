@@ -1,23 +1,41 @@
 # Imports important libraries
-import discord, datetime, requests, os
+import discord, datetime, requests, os, aiohttp, aioredis
+from mcstatus import *
 from discord.ext import commands, tasks
-from datetime import datetime
+from datetime import datetime, timedelta
 from discord import app_commands
 from PIL import Image
 from io import BytesIO
+from typing import Dict
 
 # Important intents to make things function properly
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
-# Ping command - Pings the bot for latency
+
+cooldowns: Dict[int, Dict[str, datetime]] = {}
+
+@commands.cooldown(1, 5, commands.BucketType.user)
 @tree.command(name="ping", description="Pings the bot for image processing latency in ms")
 async def ping(interaction: discord.Interaction):
+    user_id = interaction.user.id
+    command_name = "ping"
+    if user_id not in cooldowns:
+        cooldowns[user_id] = {}
+
+    now = datetime.now()
+    if command_name in cooldowns[user_id]:
+        cooldown_end_time = cooldowns[user_id][command_name]
+        if now < cooldown_end_time:
+            time_left = (cooldown_end_time - now).total_seconds()
+            response = f"Please wait {time_left:.1f} seconds before using this command again."
+            await interaction.response.send_message(response, ephemeral=True)
+            return
+
     start_time = datetime.utcnow()
     # Request image from Minetar and resize it
     minetar_url = "https://api.mineatar.io/body/full/161c986278854ef8af3dd7631d9610f9"
     imgur_url = "https://api.imgur.com/3/image"
-    
     async with aiohttp.ClientSession() as session:
         async with session.get(minetar_url) as resp:
             image_bytes = await resp.read()
@@ -30,40 +48,38 @@ async def ping(interaction: discord.Interaction):
 
     # Upload the image to Imgur
     headers = {
-        "Authorization": f"Client-ID IMGUR_CLIENT_ID"
+        "Authorization": f"Client-ID YOUR_CLIENT_ID"
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(imgur_url, headers=headers, data=output_bytes) as resp:
             imgur_data = await resp.json()
     imgur_url = imgur_data["data"]["link"]
-    
+
     # Send the message back with latency and image processing time
     end_time = datetime.utcnow()
     latency = end_time - start_time
     processing_time = round((end_time - start_time - latency).total_seconds() * 1000)
     ping_time = round(latency.total_seconds() * 1000)
+
+    cooldowns[user_id][command_name] = now + timedelta(seconds=5)
     await interaction.response.send_message(
         f"Pinging image processing and upload time... (this may take a few seconds)")
     await interaction.edit_original_response(
         content=f"Pong!\nImage processing and upload time: {ping_time} ms")
-    
-    @tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
+
+@tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
 async def help(ctx):
-    help_one = f"/ping - Pings the bot for image processing latency in ms"
-    help_two = f"/skin 'username' - Fetches Minecraft model of desired username"
-    help_three = f"/steal 'username' - Fetches Minecraft model of desired username"
-    help_four = f"/creator - Shows a list of the current creators/owners of the bot."
-    help_five = f"/help - displays this list of commands"
+    help_one, help_two, help_three, help_four, help_five, help_six = "/ping - Pings the bot for image processing latency in ms", "/skin 'username' - Fetches Minecraft model of desired username", "/steal 'username' - Fetches Minecraft model of desired username", "/creator - Shows a list of the current creators/owners of the bot.", "/java 'server ip' Quickly retrieve the status of any Java Minecraft server", "/help - displays this list of commands"
     embed = discord.Embed(title="Command list", color=discord.Color.blue())
     embed.add_field(name="", value=f"{help_one}", inline=False)
     embed.add_field(name="", value=f"{help_two}", inline=False)
     embed.add_field(name="", value=f"{help_three}", inline=False)
     embed.add_field(name="", value=f"{help_four}", inline=False)
     embed.add_field(name="", value=f"{help_five}", inline=False)
-
-    await ctx.response.send_message(embed=embed)
+    embed.add_field(name="", value=f"{help_six}", inline=False)
     
-# Skin command - Get the skin for a Minecraft user
+    await ctx.response.send_message(embed=embed)
+
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
     if not username:
@@ -97,12 +113,12 @@ async def skin(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID IMGUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID YOUR_CLIENT_ID"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
 
-    embed = discord.Embed(title=f"Skin for user {username}")
+    embed = discord.Embed(title=f"Skin for user {username}", color=discord.Color.blurple())
     embed.set_image(url=full_skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
@@ -143,12 +159,12 @@ async def skin(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID IMGUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID YOUR_CLIENT_ID"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
 
-    embed = discord.Embed(title=f"Skin for user {username}")
+    embed = discord.Embed(title=f"Skin for user {username}", color=discord.Color.blurple())
     embed.set_image(url=full_skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
@@ -167,6 +183,28 @@ async def creator(ctx):
 
     await ctx.response.send_message(embed=embed)
 # Connects between bot server and Discord and readies it up
+@tree.command(name="java", description="Quickly retrieve the status of any Java Minecraft server")
+async def java(interaction: discord.Interaction, java_address: str):
+    try:
+        server = JavaServer(java_address)
+        status = server.status()
+
+        embed = discord.Embed(title=f"Status of {java_address}", color=discord.Color.green())
+        embed.add_field(name="Status", value="Online", inline=True)
+        embed.add_field(name="Host", value=java_address, inline=True)
+        embed.set_thumbnail(url=f"https://api.mcsrvstat.us/icon/{java_address}")
+        embed.add_field(name="Version", value=status.version.name, inline=True)
+        embed.add_field(name="Players", value=f"{status.players.online}/{status.players.max}", inline=True)
+        embed.add_field(name="Protocol Version", value=status.version.protocol, inline=True)
+        if hasattr(status, 'software'):
+            embed.add_field(name="Software", value=status.software.name, inline=True)
+        else:
+            embed.add_field(name="Software", value="N/A", inline=True)
+
+        await interaction.response.send_message(embed=embed)
+
+    except Exception as e:
+        await interaction.response.send_message(f"An error occurred while retrieving the server status: {e}")
 
 @client.event
 async def on_ready():
