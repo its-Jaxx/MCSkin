@@ -46,6 +46,23 @@ async def ping(interaction: discord.Interaction):
         f"Pinging image processing and upload time... (this may take a few seconds)")
     await interaction.edit_original_response(
         content=f"Pong!\nImage processing and upload time: {ping_time} ms")
+    
+    @tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
+async def help(ctx):
+    help_one = f"/ping - Pings the bot for image processing latency in ms"
+    help_two = f"/skin 'username' - Fetches Minecraft model of desired username"
+    help_three = f"/steal 'username' - Fetches Minecraft model of desired username"
+    help_four = f"/creator - Shows a list of the current creators/owners of the bot."
+    help_five = f"/help - displays this list of commands"
+    embed = discord.Embed(title="Command list", color=discord.Color.blue())
+    embed.add_field(name="", value=f"{help_one}", inline=False)
+    embed.add_field(name="", value=f"{help_two}", inline=False)
+    embed.add_field(name="", value=f"{help_three}", inline=False)
+    embed.add_field(name="", value=f"{help_four}", inline=False)
+    embed.add_field(name="", value=f"{help_five}", inline=False)
+
+    await ctx.response.send_message(embed=embed)
+    
 # Skin command - Get the skin for a Minecraft user
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
