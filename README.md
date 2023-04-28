@@ -4,7 +4,7 @@
 Very simple Discord bot written in Python to check someones Minecraft skin.<br>
 If you don't feel like setting this bot up yourself<br>
 consider inviting this bot using one of these invite links
-- https://jaxx.site/discord/discord_bot
+- https://jaxx.site/discord
 - https://nismo1337.xyz/MCSkin
 
 ![image](https://media.discordapp.net/attachments/965081701237805166/1096581424552874089/image.png?width=467&height=700)
@@ -12,8 +12,18 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
-<summary>Version 6.0 - 6.1 (Render update)</summary>
+<summary>Version 7.0 (Server update)</summary>
 
+- Added the ability to show status of server using '/java {server_address}'
+</details>
+
+<details>
+<summary>Version 6.0 - 6.3 (Render update)</summary>
+
+#### Version 6.3
+- Added '/help' to provide an quick and easy list of currently supported commands.
+#### Version 6.2
+- Minetar has removed support for username since April 23rd. Updated on April 24th to now only be UUID.
 #### Version 6.1
 - Made changes to '/ping', now times the entire process and gives you accurate timings.
 #### Version 6.0
@@ -79,5 +89,5 @@ Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
 #### For direct contact
-Discord: jaxx#0002
+Discord: jaxx#0002<br>
 Discord: nismo#1337
