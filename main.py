@@ -1,4 +1,3 @@
-# Imports important libraries
 import discord, datetime, requests, os, aiohttp, aioredis
 from mcstatus import *
 from discord.ext import commands, tasks
@@ -8,11 +7,9 @@ from PIL import Image
 from io import BytesIO
 from typing import Dict
 
-# Important intents to make things function properly
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
-
 cooldowns: Dict[int, Dict[str, datetime]] = {}
 
 @commands.cooldown(1, 5, commands.BucketType.user)
@@ -33,7 +30,7 @@ async def ping(interaction: discord.Interaction):
             return
 
     start_time = datetime.utcnow()
-    # Request image from Minetar and resize it
+
     minetar_url = "https://api.mineatar.io/body/full/161c986278854ef8af3dd7631d9610f9"
     imgur_url = "https://api.imgur.com/3/image"
     async with aiohttp.ClientSession() as session:
@@ -46,16 +43,14 @@ async def ping(interaction: discord.Interaction):
                 image.save(output_buffer, "PNG")
                 output_bytes = output_buffer.getvalue()
 
-    # Upload the image to Imgur
     headers = {
-        "Authorization": f"Client-ID YOUR_CLIENT_ID"
+        "Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(imgur_url, headers=headers, data=output_bytes) as resp:
             imgur_data = await resp.json()
     imgur_url = imgur_data["data"]["link"]
 
-    # Send the message back with latency and image processing time
     end_time = datetime.utcnow()
     latency = end_time - start_time
     processing_time = round((end_time - start_time - latency).total_seconds() * 1000)
@@ -69,6 +64,7 @@ async def ping(interaction: discord.Interaction):
 
 @tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
 async def help(ctx):
+
     help_one, help_two, help_three, help_four, help_five, help_six = "/ping - Pings the bot for image processing latency in ms", "/skin 'username' - Fetches Minecraft model of desired username", "/steal 'username' - Fetches Minecraft model of desired username", "/creator - Shows a list of the current creators/owners of the bot.", "/java 'server ip' Quickly retrieve the status of any Java Minecraft server", "/help - displays this list of commands"
     embed = discord.Embed(title="Command list", color=discord.Color.blue())
     embed.add_field(name="", value=f"{help_one}", inline=False)
@@ -77,7 +73,7 @@ async def help(ctx):
     embed.add_field(name="", value=f"{help_four}", inline=False)
     embed.add_field(name="", value=f"{help_five}", inline=False)
     embed.add_field(name="", value=f"{help_six}", inline=False)
-    
+
     await ctx.response.send_message(embed=embed)
 
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
@@ -103,6 +99,7 @@ async def skin(interaction: discord.Interaction, username: str):
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
         await interaction.response.send_message(embed=embed)
         return
+
     rendered_skin_url = f"https://api.mineatar.io/body/full/{uuid}"
     model_url = f"https://crafatar.com/skins/{uuid}"
     response = requests.get(rendered_skin_url)
@@ -113,7 +110,7 @@ async def skin(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID YOUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
@@ -125,9 +122,8 @@ async def skin(interaction: discord.Interaction, username: str):
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {full_skin_url}\nModel: {model_url}\nCommand sent")
 
-# Steal command - Get the skin for a Minecraft user
 @tree.command(name="steal", description="Get the skin for a Minecraft user")
-async def skin(interaction: discord.Interaction, username: str):
+async def steal(interaction: discord.Interaction, username: str):
     if not username:
         embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
         await interaction.response.send_message(embed=embed)
@@ -149,6 +145,7 @@ async def skin(interaction: discord.Interaction, username: str):
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
         await interaction.response.send_message(embed=embed)
         return
+
     rendered_skin_url = f"https://api.mineatar.io/body/full/{uuid}"
     model_url = f"https://crafatar.com/skins/{uuid}"
     response = requests.get(rendered_skin_url)
@@ -159,7 +156,7 @@ async def skin(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID YOUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
@@ -168,9 +165,10 @@ async def skin(interaction: discord.Interaction, username: str):
     embed.set_image(url=full_skin_url)
     embed.add_field(name="", value=f"[Click to download template]({model_url})", inline=False)
     embed.add_field(name="", value=f"UUID: {uuid}", inline=False)
+
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nSkin: {full_skin_url}\nModel: {model_url}\nCommand sent")
-# Creator command - List of the people who created me
+
 @tree.command(name="creator", description="List of the people who created me")
 async def creator(ctx):
     nismo_url = f"https://github.com/nismo1337"
@@ -182,24 +180,21 @@ async def creator(ctx):
     embed.add_field(name="", value=f"[Open source on github]({github_url})", inline=False)
 
     await ctx.response.send_message(embed=embed)
-# Connects between bot server and Discord and readies it up
+
 @tree.command(name="java", description="Quickly retrieve the status of any Java Minecraft server")
 async def java(interaction: discord.Interaction, java_address: str):
+
     try:
         server = JavaServer(java_address)
         status = server.status()
 
         embed = discord.Embed(title=f"Status of {java_address}", color=discord.Color.green())
-        embed.add_field(name="Status", value="Online", inline=True)
-        embed.add_field(name="Host", value=java_address, inline=True)
+        embed.add_field(name="Status", value="Online", inline=False)
+        embed.add_field(name="Host", value=java_address, inline=False)
         embed.set_thumbnail(url=f"https://api.mcsrvstat.us/icon/{java_address}")
-        embed.add_field(name="Version", value=status.version.name, inline=True)
-        embed.add_field(name="Players", value=f"{status.players.online}/{status.players.max}", inline=True)
-        embed.add_field(name="Protocol Version", value=status.version.protocol, inline=True)
-        if hasattr(status, 'software'):
-            embed.add_field(name="Software", value=status.software.name, inline=True)
-        else:
-            embed.add_field(name="Software", value="N/A", inline=True)
+        embed.add_field(name="Version", value=status.version.name, inline=False)
+        embed.add_field(name="Players", value=f"{status.players.online}/{status.players.max}", inline=False)
+        embed.add_field(name="Protocol Version", value=status.version.protocol, inline=False)
 
         await interaction.response.send_message(embed=embed)
 
@@ -214,4 +209,4 @@ async def on_ready():
     await client.change_presence(activity=activity)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("")
+client.run("YOUR_BOT_TOKEN_HERE")
