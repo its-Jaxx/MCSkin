@@ -14,6 +14,12 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
+  <summary>Version 8.0 (Hypixel Satus update)</summary>
+
+  - Added the ability to show status of specified user on Hypixel using '/hypixel {username}
+</details>
+
+<details>
 <summary>Version 7.0 (Server update)</summary>
 
 - Added the ability to show status of server using '/java {server_address}'
