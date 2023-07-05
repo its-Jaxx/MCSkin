@@ -4,3 +4,4 @@ requests
 aiohttp
 aioredis
 mcstatus
+pillow
