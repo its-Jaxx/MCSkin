@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 from discord import app_commands
 from PIL import Image
+from PIL import *
 from io import BytesIO
 from typing import Dict
 
@@ -44,7 +45,7 @@ async def ping(interaction: discord.Interaction):
                 output_bytes = output_buffer.getvalue()
 
     headers = {
-        "Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"
+        "Authorization": f"Client-ID [YOUR_CLIENT_ID]"
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(imgur_url, headers=headers, data=output_bytes) as resp:
@@ -65,7 +66,7 @@ async def ping(interaction: discord.Interaction):
 @tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
 async def help(ctx):
 
-    help_one, help_two, help_three, help_four, help_five, help_six = "/ping - Pings the bot for image processing latency in ms", "/skin 'username' - Fetches Minecraft model of desired username", "/steal 'username' - Fetches Minecraft model of desired username", "/creator - Shows a list of the current creators/owners of the bot.", "/java 'server ip' Quickly retrieve the status of any Java Minecraft server", "/help - displays this list of commands"
+    help_one, help_two, help_three, help_four, help_five, help_six help_seven = "/ping - Pings the bot for image processing latency in ms", "/skin 'username' - Fetches Minecraft model of desired username", "/steal 'username' - Fetches Minecraft model of desired username", "/creator - Shows a list of the current creators/owners of the bot.", "/java 'server ip' Quickly retrieve the status of any Java Minecraft server", "/help - displays this list of commands", "/hypixel 'username' - Displays what game specified user is playing within Hypixel"
     embed = discord.Embed(title="Command list", color=discord.Color.blue())
     embed.add_field(name="", value=f"{help_one}", inline=False)
     embed.add_field(name="", value=f"{help_two}", inline=False)
@@ -73,8 +74,64 @@ async def help(ctx):
     embed.add_field(name="", value=f"{help_four}", inline=False)
     embed.add_field(name="", value=f"{help_five}", inline=False)
     embed.add_field(name="", value=f"{help_six}", inline=False)
+    embed.add_field(name="", value=f"{help_seven}", inline=False)
 
     await ctx.response.send_message(embed=embed)
+
+@tree.command(name="hypixel", description="Displays information of a Hypixel user")
+async def hypixel(interaction: discord.Interaction, username: str):
+    if not username:
+        embed = discord.Embed(title="Error", description="Please provide a Minecraft username", color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        return
+
+    response = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{username}")
+    if response.status_code == 204:
+        embed = discord.Embed(title="Error", color=discord.Color.red())
+        embed.add_field(value=f"Unable to find player UUID for user {username}")
+        embed.add_field(value=f"Make sure you spelled it correctly")
+        await interaction.response.send_message(embed=embed)
+        return
+
+    embed = discord.Embed(title=f"Hypixel user {username}:", color=discord.Color.blurple())
+
+    try:
+        uuid = response.json()['id']
+    except KeyError:
+        embed = discord.Embed(title="Error", color=discord.Color.red())
+        embed.add_field(name="", value=f"Unable to find player UUID for user {username}")
+        embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
+        await interaction.response.send_message(embed=embed)
+
+    api_key = f"[YOUR_API_KEY]"
+    status_url = f"https://api.hypixel.net/status?key={api_key}&uuid={uuid}"
+
+    response = requests.get(status_url)
+    if response.status_code == 403:
+        embed = discord.Embed(title="Error", color=discord.Color.red())
+        embed.add_field(name="", value="API Key is invalid, please contact the owner regarding this issue.")
+        print("Invalid API key")
+        await interaction.response.send_message(embed=embed)
+        return
+
+    session = response.json()["session"]
+
+    if session['online']:
+        if 'gameType' in session:
+            game_type = session['gameType']
+            if game_type == 'LEGACY':
+                embed.add_field(name="", value=f"{username} is in Limbo", inline=False)
+            elif 'mode' in session and session['mode'] == 'LOBBY':
+                embed.add_field(name="", value=f"{username} is in {game_type} lobby", inline=False)
+            else:
+                embed.add_field(name="", value=f"{username} is currently playing {game_type}", inline=False)
+        else:
+            embed.add_field(name="", value=f"{username} is online", inline=False)
+    else:
+        embed.add_field(name="", value=f"{username} is offline", inline=False)
+
+    await interaction.response.send_message(embed=embed)
+    print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nCommand sent\n")
 
 @tree.command(name="skin", description="Get the skin for a Minecraft user")
 async def skin(interaction: discord.Interaction, username: str):
@@ -110,7 +167,7 @@ async def skin(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID [YOUR_CLIENT_ID]"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
@@ -156,7 +213,7 @@ async def steal(interaction: discord.Interaction, username: str):
     image.save(img_bytes, format='PNG')
     img_bytes = img_bytes.getvalue()
 
-    headers = {"Authorization": f"Client-ID YOUR_IMGUR_CLIENT_ID"}
+    headers = {"Authorization": f"Client-ID [YOUR_CLIENT_ID]"}
     imgur_url = "https://api.imgur.com/3/image"
     response = requests.post(imgur_url, headers=headers, data={"image": img_bytes})
     full_skin_url = response.json()["data"]["link"]
@@ -209,4 +266,4 @@ async def on_ready():
     await client.change_presence(activity=activity)
     print(f"Logged in as {client.user.name}\nBot is ready to use\n-------------------")
 
-client.run("YOUR_BOT_TOKEN_HERE")
+client.run("YOUR_BOT_TOKEN")
