@@ -14,7 +14,7 @@ consider inviting this bot using one of these invite links
 <summary>Version history</summary>
 
 <details>
-  <summary>Version 8.0 (Hypixel Satus update)</summary>
+  <summary>Version 8.0 (Hypixel Status update)</summary>
 
   - Added the ability to show status of specified user on Hypixel using '/hypixel {username}
 </details>
