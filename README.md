@@ -7,15 +7,16 @@ consider inviting this bot using one of these invite links
 - https://jaxx.site/discord
 - https://nismo1337.xyz/MCSkin
 
-# NEW UPDATES COMING SHORTLY!!!
-
 ![image](https://media.discordapp.net/attachments/965081701237805166/1096581424552874089/image.png?width=467&height=700)
 <details>
 <summary>Version history</summary>
 
 <details>
-  <summary>Version 8.0 (Hypixel Status update)</summary>
+  <summary>Version 8.0 - 8.1 (Hypixel Status update)</summary>
 
+#### Version 8.1
+  - Added the ability to display social media links within the '/hypixel {username}' command
+#### Version 8.0
   - Added the ability to show status of specified user on Hypixel using '/hypixel {username}
 </details>
 
