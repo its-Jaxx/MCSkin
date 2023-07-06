@@ -66,15 +66,14 @@ async def ping(interaction: discord.Interaction):
 @tree.command(name="help", description="Provides a list of commands MCSkin currently supports")
 async def help(ctx):
 
-    help_one, help_two, help_three, help_four, help_five, help_six help_seven = "/ping - Pings the bot for image processing latency in ms", "/skin 'username' - Fetches Minecraft model of desired username", "/steal 'username' - Fetches Minecraft model of desired username", "/creator - Shows a list of the current creators/owners of the bot.", "/java 'server ip' Quickly retrieve the status of any Java Minecraft server", "/help - displays this list of commands", "/hypixel 'username' - Displays what game specified user is playing within Hypixel"
     embed = discord.Embed(title="Command list", color=discord.Color.blue())
-    embed.add_field(name="", value=f"{help_one}", inline=False)
-    embed.add_field(name="", value=f"{help_two}", inline=False)
-    embed.add_field(name="", value=f"{help_three}", inline=False)
-    embed.add_field(name="", value=f"{help_four}", inline=False)
-    embed.add_field(name="", value=f"{help_five}", inline=False)
-    embed.add_field(name="", value=f"{help_six}", inline=False)
-    embed.add_field(name="", value=f"{help_seven}", inline=False)
+    embed.add_field(name="", value=f"/ping - Pings the bot for image processing latency in ms", inline=False)
+    embed.add_field(name="", value=f"/skin 'username' - Fetches Minecraft model of desired username", inline=False)
+    embed.add_field(name="", value=f"/steal 'username' - Fetches Minecraft model of desired username", inline=False)
+    embed.add_field(name="", value=f"/creator - Shows a list of the current creators/owners of the bot.", inline=False)
+    embed.add_field(name="", value=f"/java 'server ip' Quickly retrieve the status of any Java Minecraft server", inline=False)
+    embed.add_field(name="", value=f"/hypixel 'username' - Displays what game specified user is playing within Hypixel", inline=False)
+    embed.add_field(name="", value=f"/help - displays this list of commands", inline=False)
 
     await ctx.response.send_message(embed=embed)
 
@@ -103,8 +102,9 @@ async def hypixel(interaction: discord.Interaction, username: str):
         embed.add_field(name="", value=f"Make sure you spelled it correctly", inline=False)
         await interaction.response.send_message(embed=embed)
 
-    api_key = f"[YOUR_API_KEY]"
+    api_key = f"YOUR_API_KEY"
     status_url = f"https://api.hypixel.net/status?key={api_key}&uuid={uuid}"
+    player_url = f"https://api.hypixel.net/player?key={api_key}&uuid={uuid}"
 
     response = requests.get(status_url)
     if response.status_code == 403:
@@ -129,7 +129,6 @@ async def hypixel(interaction: discord.Interaction, username: str):
             embed.add_field(name="", value=f"{username} is online", inline=False)
     else:
         embed.add_field(name="", value=f"{username} is offline", inline=False)
-
     await interaction.response.send_message(embed=embed)
     print(f"Received command: {interaction.data['name']}\nUsername: {username}\nUUID: {uuid}\nCommand sent\n")
 
