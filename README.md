@@ -7,6 +7,8 @@ consider inviting this bot using one of these invite links
 - https://jaxx.site/discord
 - https://nismo1337.xyz/MCSkin
 
+## Updates made to the code will no longer be posted publicly. Please go to one of the links above to invite the bot.
+
 ![image](https://media.discordapp.net/attachments/965081701237805166/1096581424552874089/image.png?width=467&height=700)
 <details>
 <summary>Version history</summary>
