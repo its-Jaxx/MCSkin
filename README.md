@@ -9,6 +9,8 @@ consider inviting this bot using one of these invite links
 
 ## Updates made to the code will no longer be posted publicly. Please go to one of the links above to invite the bot.
 
+## You can still use the already existing code and host an older version of your bot.
+
 ![image](https://media.discordapp.net/attachments/965081701237805166/1096581424552874089/image.png?width=467&height=700)
 <details>
 <summary>Version history</summary>
